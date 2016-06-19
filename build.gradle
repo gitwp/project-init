@@ -1,0 +1,68 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'idea'
+apply plugin: 'jetty'
+
+sourceCompatibility = 1.6
+
+repositories {
+    mavenLocal()
+    maven {
+        url 'http://maven.oschina.net/content/groups/public/'
+    }
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir("src/main/resources")
+        }
+    }
+}
+
+dependencies {
+    def spring_version="4.2.5.RELEASE"
+    def spring = ["org.springframework:spring-core:$spring_version",
+                  "org.springframework:spring-beans:$spring_version",
+                  "org.springframework:spring-aop:$spring_version",
+                  "org.springframework:spring-context:$spring_version",
+                  "org.springframework:spring-context-support:$spring_version",
+                  "org.springframework:spring-orm:$spring_version",
+                  "org.springframework:spring-jdbc:$spring_version",
+                  "org.springframework:spring-tx:$spring_version",
+    ]
+    def mybatis=["org.mybatis:mybatis:3.4.0",
+                 "org.mybatis:mybatis-spring:1.3.0",
+    ]
+    def mysql="mysql:mysql-connector-java:5.1.38"
+
+    def slf4j="org.slf4j:slf4j-api:1.7.21"
+    def slf4j_log4j="org.slf4j:slf4j-log4j12:1.7.21"
+    def log4j="log4j:log4j:1.2.17"
+
+    def jersey=["org.glassfish.jersey.containers:jersey-container-servlet-core:2.22.2"]
+    def jersey_spring = "org.glassfish.jersey.ext:jersey-spring3:2.22.2"
+
+    def commons = ["commons-dbcp:commons-dbcp:1.4",
+                   "commons-io:commons-io:2.5",
+                   "commons-lang:commons-lang:2.6"]
+
+    def gson = "com.google.code.gson:gson:2.6.2"
+
+    def junit = "junit:junit:4.11"
+    def spring_test = "org.springframework:spring-test:4.2.6.RELEASE"
+
+    compile spring,mybatis,mysql,slf4j,slf4j_log4j,log4j,jersey,gson,commons
+    compile(jersey_spring){
+        exclude(module:"org.springframework")
+    }
+    testCompile junit,spring_test
+}
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+jettyRun{
+    contextPath = "stock-app"
+    httpPort = 8000
+}
